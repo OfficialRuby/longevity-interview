@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from user_input.serializers import BloodGroupSerializers
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
+from django.core.exceptions import FieldDoesNotExist
 
 
 class FileImportView(LoginRequiredMixin, View):
@@ -60,20 +61,25 @@ class GadgetDataEntry(APIView):
         user = user_token.user
 
         if serialize.is_valid():
-            blood_test = BloodTestInfo.objects.filter(user=user)
-            if blood_test.exists():
-                blood_test.update(
-                    **request.data
-                )
-                return Response({'status': status.HTTP_201_CREATED,
-                                 'message': 'Blood test data updated successfully'})
+            try:
+                blood_test = BloodTestInfo.objects.filter(user=user)
+                if blood_test.exists():
+                    blood_test.update(
+                        **request.data
+                    )
+                    return Response({'status': status.HTTP_201_CREATED,
+                                    'message': 'Blood test data updated successfully'})
 
-            else:
-                BloodTestInfo.objects.create(
-                    user=user,
-                    **request.data,
-                )
+                else:
+                    BloodTestInfo.objects.create(
+                        user=user,
+                        **request.data,
+                    )
 
-                return Response({'status': status.HTTP_200_OK,
-                                 'message': 'Blood test data created successfully'})
+                    return Response({'status': status.HTTP_200_OK,
+                                    'message': 'Blood test data created successfully'})
+            except FieldDoesNotExist as e:
+                return Response({'status': status.HTTP_406_NOT_ACCEPTABLE,
+                                 'message': 'Invalid parameter supplied'})
+
         return Response(serialize.errors)
