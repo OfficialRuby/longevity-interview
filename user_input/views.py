@@ -1,19 +1,16 @@
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from user_input.token_auth import TokenAuthentication
+from rest_framework.response import Response
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from django.core.files.storage import FileSystemStorage
-from user_input.models import BloodTestInfo
+from user_input.models import BloodTestInfoFile, BloodTestInfo
 from django.http import HttpResponse
-
-
-class DashboardView(View):
-    def get(self, request, *args, **kwargs):
-        context = {
-
-        }
-
-        return render(self.request, 'dash/index.html', context)
+from user_input.serializers import BloodGroupSerializers
+from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 
 
 class FileImportView(LoginRequiredMixin, View):
@@ -29,17 +26,19 @@ class FileImportView(LoginRequiredMixin, View):
         upload_file = request.FILES.get('upload_file')
         if upload_file:
             file_str = str(upload_file)
-            if file_str.endswith('.csv') or file_str.endswith('.png'):
+            if file_str.endswith('.csv'):
                 # do csv or png file manipulation here
-                blood_test_qs = BloodTestInfo.objects.filter(user=request.user)
+                blood_test_qs = BloodTestInfoFile.objects.filter(user=request.user)
                 if blood_test_qs.exists():
                     blood_test_obj = blood_test_qs.first()
                     blood_test_obj.blood_test_file = upload_file
+                    blood_test_obj.file_ext = 'csv'
                     blood_test_obj.save()
                     messages.success(self.request, 'Your file was received, we will reveiw it shortly')
                     return redirect('dash:upload')
                 else:
-                    BloodTestInfo.objects.create(user=self.request.user, blood_test_file=upload_file)
+                    BloodTestInfoFile.objects.create(
+                        user=self.request.user, blood_test_file=upload_file, file_ext='png')
                     messages.success(self.request, 'Your file was received, we will reveiw it shortly')
                     return redirect('dash:upload')
             else:
@@ -47,3 +46,34 @@ class FileImportView(LoginRequiredMixin, View):
                 return redirect('dash:upload')
         messages.warning(self.request, 'Please upload a valid PNG or CSV file')
         return redirect('dash:upload')
+
+
+class GadgetDataEntry(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serialize = BloodGroupSerializers(data=request.data)
+        bearer = request.headers.get('Authorization')
+        bearer_token = bearer.split(' ')[-1]
+        user_token = Token.objects.get(key=bearer_token)
+        user = user_token.user
+
+        if serialize.is_valid():
+            blood_test = BloodTestInfo.objects.filter(user=user)
+            if blood_test.exists():
+                blood_test.update(
+                    **request.data
+                )
+                return Response({'status': status.HTTP_201_CREATED,
+                                 'message': 'Blood test data updated successfully'})
+
+            else:
+                BloodTestInfo.objects.create(
+                    user=user,
+                    **request.data,
+                )
+
+                return Response({'status': status.HTTP_200_OK,
+                                 'message': 'Blood test data created successfully'})
+        return Response(serialize.errors)

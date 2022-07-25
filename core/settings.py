@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    # rest framework
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -114,3 +117,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     'reset_password': 'store.forms.MyCustomResetPasswordForm',
 #     'reset_password_from_key': 'store.forms.MyCustomResetPasswordKeyForm',
 # }
+
+
+REST_FRAMEWORK = {
+
+
+}
