@@ -10,5 +10,5 @@ COPY requirements.txt /app/
 RUN pip install --upgrade pip 
 RUN pip install -r requirements.txt
 COPY . /app/
-RUN chmod +x init.sh
-ENTRYPOINT ["./init.sh"]
+# RUN chmod +x init.sh
+# ENTRYPOINT ["./init.sh"]

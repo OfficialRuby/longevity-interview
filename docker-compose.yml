@@ -5,13 +5,19 @@ services:
     image: postgres
     volumes:
       - ./data/db:/var/lib/postgresql/data
+    command: postgres -c stats_temp_directory=/tmp
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "python3 manage.py makemigrations --noinput &&
+             while ! python3 manage.py migrate --noinput ; do sleep 1 ; done && 
+             python3 manage.py createsuperuser --user Ruby --noinput --email reuby@hostname.tld --noinput ;
+             python3 manage.py runserver 0.0.0.0:8000"
+
     volumes:
       - .:/app
     ports:
@@ -21,5 +27,6 @@ services:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
     depends_on:
       - db

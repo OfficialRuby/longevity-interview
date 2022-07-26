@@ -16,7 +16,9 @@ from django.core.exceptions import FieldDoesNotExist
 
 class FileImportView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
+        token = Token.objects.filter(user=request.user).first()
         context = {
+            'token': token,
 
         }
 
