@@ -1,13 +1,20 @@
 # Longevity Interview Exercise
 
 ## Description
-This project demonstrates the parsing of user supplied data via file upload and RESTful communication of Gadget and IoT devices to backend service.
+This exercise comprises of two seperate cards, 
+This project demonstrates the parsing of user supplied data via file upload, RESTful communication of Gadget and IoT devices to backend service and Rewarding user for performing a specific task.
 
-### How it works 
+### How File Upload Section Works
 The project enables user to upload a **CSV** file from their mobile or desktop devices.
 
 The project also allow an electronic device to independenlty communicated with a backend sever using a recognicezed authentication key.
 
+The first project folder can be found [here](user_input/)
+### How User Rewarding Works
+
+The second part of this project works by rewarding user's with $LONG Token for completing a task, task are created when the user signs up and the users are awarded the moment they complete a specific task.
+
+The second project folder can be found [here](reward/)
 ## Dependencies
 ### Major Dependencies
 This project was tested on a Debian 11 environment with the following packages installed:
@@ -33,6 +40,7 @@ idna==3.3
 numpy==1.23.1
 oauthlib==3.2.0
 pandas==1.4.3
+Pillow==9.2.0
 psycopg2-binary==2.9.3
 pycodestyle==2.8.0
 pycparser==2.21
@@ -61,6 +69,19 @@ Using an API development tool such as Postman, make a post request to the endpoi
 blood_type, blood_rhd` with an Authorized bearer token. An authorized bearer token will be generated once you signup.
 
 Each user has a unique **Authorization Token**, login as an admin to view token for each user user.
+
+The cURL command below describes an example of the API call
+```
+curl --location --request POST '127.0.0.1:8000/entry-gadget/' \
+--header 'Authorization: Bearer e829b78e3319d4a9273831ef43242c987a62910c'
+```
+`e829b78e3319d4a9273831ef43242c987a62910c` is the Authentication token and it is unique for each user.
+
+## Known Issue
+1. Most of the requests in the second task is made using a **GET** request, this practice is not recommended and was only included for testing purpose. A RESTful API communication would be recocommended in a production environment.
+2. A strict check was not employed on rewarding system, which means a user can be rewarded several times for performing same task.
+For instance, a user will be rewarded for linking a device or app, and the user decided to remove the app, this user will be rewarded when they link same app again. This issue can be fixed by assigning a inique properties to a completed task which could make the task impossible to retake. 
+3. For the sake of simplicity of this testing, mailing feature was not included.
 
 ## Note
 This project is not production worthy and it is only available for testing purpose only
