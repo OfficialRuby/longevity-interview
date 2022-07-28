@@ -106,7 +106,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_FORMS = {
     'signup': 'reward.forms.MyCustomSignupForm',
     'login': 'reward.forms.MyCustomLoginForm',
