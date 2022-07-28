@@ -13,13 +13,13 @@
 <div class="container-fluid mt--6">
     <div class="row justify-content-center">
 
-        <div class="col-xl-8 order-xl-1">
+        <div class="col-md-9 order-xl-1">
             <div class="card">
                 <div class="card-header">
                     <div class="row align-items-center">
-                        <div class="col-8">
+                        <div class="col-12">
                             <h3 class="mb-2">Allow users to input data values with 3 different entry types</h3>
-                            <h3 class="mb-0">Upload From CSV File </h3>
+                            <h3 class="mb-0">Upload From CSV File (A sample csv file has been provided, please read the documentation) </h3>
                         </div>
 
                     </div>
@@ -48,6 +48,8 @@
 
                     <div class="card-header border-0">
                         <h3 class="mb-0">Hello {{request.user.username}} you bearer token is: {{token.key}} </h3>
+                        <p class="lead">Please use this API token in making a POST request to <br> {{request.get_host}}/entry-gadget/ </p>
+                        <p>Read the documentation for required POST data</p>
                     </div>
                  
 

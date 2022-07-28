@@ -5,7 +5,7 @@ from user_input.views import FileImportView, GadgetDataEntry
 
 app_name = 'dash'
 urlpatterns = [
-    path('', FileImportView.as_view(), name='upload'),
+    path('entry/', FileImportView.as_view(), name='upload'),
     path('entry-gadget/', GadgetDataEntry.as_view(), name='gadget_entry'),
 
 ]

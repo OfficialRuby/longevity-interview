@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # project apps
     'user_input',
+    'reward',
     # django allauth apps
     'allauth',
     'allauth.account',
@@ -67,6 +68,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 LOGIN_REDIRECT_URL = '/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -105,18 +107,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ACCOUNT_FORMS = {
-#     'signup': 'store.forms.MyCustomSignupForm',
-#     'login': 'store.forms.MyCustomLoginForm',
-#     'reset_password': 'store.forms.MyCustomResetPasswordForm',
-#     'reset_password_from_key': 'store.forms.MyCustomResetPasswordKeyForm',
-# }
-
-
-REST_FRAMEWORK = {
-
-
+ACCOUNT_FORMS = {
+    'signup': 'reward.forms.MyCustomSignupForm',
+    'login': 'reward.forms.MyCustomLoginForm',
+    # 'reset_password': 'reward.forms.MyCustomResetPasswordForm',
+    # 'reset_password_from_key': 'reward.forms.MyCustomResetPasswordKeyForm',
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True
 
 
 DATABASES = {
@@ -127,5 +131,6 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': 'db',
         'PORT': 5432,
+
     }
 }
