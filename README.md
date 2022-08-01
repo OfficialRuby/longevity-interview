@@ -9,7 +9,8 @@ The project enables user to upload a **CSV** file from their mobile or desktop d
 
 The project also allow an electronic device to independenlty communicated with a backend sever using a recognicezed authentication key.
 
-The first project folder can be found [here](user_input/)
+Code for user entry via form input can be found here [here](user_input/)
+Code for user entry via tracker app is available here [here](tracker_entry/)
 ### How User Rewarding Works
 
 The second part of this project works by rewarding user's with $LONG Token for completing a task, task are created when the user signs up and the users are awarded the moment they complete a specific task.
@@ -62,7 +63,7 @@ urllib3==1.26.10
 4. Open your web browser and navigate to `localhost:8000`
 5. Login with the default username **Ruby** and password **ruby**
 6. Upload a CSV file with the following coloum names ` blood_pressure, 
-blood_type, blood_rhd`. An example CSV file can be found [here](test_data/blood_test.csv)
+blood_type, blood_rhd`. An example CSV file can be found [here](test_data/test_file.csv)
 
 ### Testing the API endpoint 
 Using an API development tool such as Postman, make a post request to the endpoint `localhost:8000/entry-gadget/`, the API request should contain the following ` blood_pressure, 
@@ -70,18 +71,45 @@ blood_type, blood_rhd` with an Authorized bearer token. An authorized bearer tok
 
 Each user has a unique **Authorization Token**, login as an admin to view token for each user user.
 
+#### cURL command to test the API
+
 The cURL command below describes an example of the API call
 ```
 curl --location --request POST '127.0.0.1:8000/entry-gadget/' \
---header 'Authorization: Bearer e829b78e3319d4a9273831ef43242c987a62910c'
+--header 'Authorization: Bearer e829b78e3319d4a9273831ef43242c987a62910c' \
+--form 'input_file=@"/absolute/path/of/project/test_data/blood_test.csv"' \
+--form 'file_ext="csv"'
+```
+#### Python code to test the API
+The code below shows an API request using python
+```
+import requests
+
+url = "127.0.0.1:8000/entry-gadget/"
+
+payload={'file_ext': 'csv'}
+files=[
+  ('input_file',('blood_test.csv',open('/absolute/path/of/project/test_data/blood_test.csv','rb'),'text/csv'))
+]
+headers = {
+  'Authorization': 'Bearer e829b78e3319d4a9273831ef43242c987a62910c'
+}
+
+response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+print(response.text)
 ```
 `e829b78e3319d4a9273831ef43242c987a62910c` is the Authentication token and it is unique for each user.
 
 ## Known Issue
-1. Most of the requests in the second task is made using a **GET** request, this practice is not recommended and was only included for testing purpose. A RESTful API communication would be recocommended in a production environment.
+1. Requesting for credentials of an insecure request is prohibited by most providers, the **Import Data From Google Fit App** is a demo of how fitness app import could be implemented.
 2. A strict check was not employed on rewarding system, which means a user can be rewarded several times for performing same task.
 For instance, a user will be rewarded for linking a device or app, and the user decided to remove the app, this user will be rewarded when they link same app again. This issue can be fixed by assigning a inique properties to a completed task which could make the task impossible to retake. 
-3. For the sake of simplicity of this testing, mailing feature was not included.
+3. For the sake of simplicity of this testing, mailing feature was not included and codes were not splitted in chunks.
 
 ## Note
-This project is not production worthy and it is only available for testing purpose only
+1. This project is not production worthy and it is only available for testing purpose only
+2. While I have included google authentication credentials for testing, feel free to overwrite the existing credentials
+3. The following links should be used while setting up your own GCP project, please follow [this guide](https://developers.google.com/identity/protocols/oauth2/web-server) for setting up you own GCP app.
+
+
