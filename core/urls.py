@@ -7,6 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('user_input.urls')),
     path('', include('reward.urls')),
+    path('', include('tracker_entry.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 

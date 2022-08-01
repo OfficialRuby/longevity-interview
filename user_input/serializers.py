@@ -1,8 +1,13 @@
 from rest_framework import serializers
-from user_input.models import BloodTestInfo
+from user_input.models import BloodTestResult, LiverFunctionTestResult, RenalFunctionResult, SampleFile
 
 
-class BloodGroupSerializers(serializers.ModelSerializer):
+class SampleFileSerializer(serializers.ModelSerializer):
+    # input_file = FileField()
+
     class Meta:
-        model = BloodTestInfo
-        fields = ['blood_pressure', 'blood_type', 'blood_rhd', ]
+        model = SampleFile
+        fields = ['input_file', 'file_ext', ]
+
+
+

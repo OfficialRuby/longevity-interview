@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # project apps
     'user_input',
+    'tracker_entry',
     'reward',
     # django allauth apps
     'allauth',

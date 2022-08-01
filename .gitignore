@@ -1,5 +1,9 @@
 __pycache__/
 temps/
-# media/
+media/test_files/
 venv/
 data/
+api.key
+google_fit.json
+token.txt
+sample-image/

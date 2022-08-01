@@ -1,3 +1,4 @@
+from django.utils.crypto import get_random_string
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.contrib.auth.models import User
@@ -11,6 +12,14 @@ MEASURE_INSTRUMENT_CHOICES = (
     ('metric', 'Metric'),
     ('imperial', 'Imperial'),
     ('custom', 'Custom'),
+)
+
+APP_PROVIDER_CHOICES = (
+    ('google', 'Google Fit'),
+    ('samsung', 'Samsung Health'),
+    ('apple', 'Apple Health'),
+    ('garmin', 'Garmin Connect'),
+    ('xiaomi', 'Xiaomi Mi Fit'),
 )
 
 
@@ -97,15 +106,21 @@ class Parameter(models.Model):
 
 class App(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    app_name = models.CharField(max_length=200)
+    app_id = models.CharField(max_length=100, blank=True, null=True)
+    app_name = models.CharField(max_length=200, choices=APP_PROVIDER_CHOICES)
     thumbnail = models.ImageField(upload_to='app')
     reward_point = models.PositiveIntegerField(default=5)
     awarded = models.BooleanField(default=False)
     date_awarded = models.DateTimeField(blank=True, null=True)
     connection_status = models.CharField(max_length=30, choices=CONNECTION_CHOICES, default='danger')
 
+    def save(self, *args, **kwargs):
+        if self.app_id == None:
+            self.app_id = get_random_string(30)
+        super(App, self).save(*args, **kwargs)
+
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username} - {self.app_name} '
 
     def get_connect_url(self):
         return reverse('connect_one_app',

@@ -8,6 +8,7 @@ from reward.models import Parameter, Device, App, Reward
 from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from reward.app_auth import google_fit_auth
 
 
 def is_valid_form(values):
@@ -121,12 +122,10 @@ class ConnectAppView(LoginRequiredMixin, View):
 def connect_app(request, id):
     if request.method == 'GET':
         app = get_object_or_404(App, id=id)
-        app.awarded = True
-        app.date_awarded = timezone.now()
-        app.connection_status = 'success'
-        app.save()
-        messages.success(request, f'You have received 5 LONG token for connecting {app.app_name}')
-        return redirect(request.META.get('HTTP_REFERER', 'connect_device'))
+        if app.app_name == 'google':
+            request.session['current_app'] = 'google'
+            return redirect(google_fit_auth())
+
     return HttpResponseBadRequest('Request Not Implemented')
 
 
@@ -138,10 +137,35 @@ def disconnect_app(request, id):
         app.date_awarded = None
         app.connection_status = 'danger'
         app.save()
-        messages.warning(request, f'You have disconnected {app.app_name}')
+        messages.warning(request, f'You have disconnected {app.app_name.title()}')
         return redirect(request.META.get('HTTP_REFERER', 'connect_device'))
     return HttpResponseBadRequest('Request Not Implemented')
 
 
-class TestLogin(TemplateView):
-    template_name = 'dash/login.html'
+@login_required
+def verify_app_token(request):
+    if request.method == 'GET':
+        try:
+            current_app = request.session['current_app']
+            app = App.objects.filter(user=request.user, app_name=current_app)
+            if app.exists():
+                app = app.first()
+                if 'error' in request.GET:
+                    messages.warning(request, 'Connection cancelled by user')
+                    return redirect('connect_app')
+                else:
+                    # This only uses google as testcase amd it can be modified to be in line with other health apps
+                    app.api_key = request.GET.get('code')
+                    app.awarded = True
+                    app.date_awarded = timezone.now()
+                    app.connection_status = 'success'
+                    app.save()
+                    del request.session['current_app']
+                    messages.success(request, f'You have received 5 LONG token for connecting {app.app_name.title()}')
+                    return redirect('connect_app')
+            # messages.warning(request, 'Your browser is too old to browse this site')
+        except KeyError:
+            messages.error(request, 'Something went wrong please reload the page and try again')
+            return redirect('connect_app')
+
+    return HttpResponseBadRequest('Request Not Implemented')

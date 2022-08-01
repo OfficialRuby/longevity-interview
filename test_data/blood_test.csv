@@ -1,2 +1,2 @@
-blood_pressure, blood_type, blood_rhd
-OOO/OO,A+,positive
+hemoglobin,white_cell_count,sodium,potassium,urea,platelet_count,amylase,albumin,total_bilirubin,conjugate_bilirubin,alanine_aminotransferase,alkaline_phosphate,urea,creatinine,sodium,potassium,chloride
+13.2g/dL,10.3 x 10^9/L,140 mmol/L,4.3 mmol/L,3.1 mmol/L,329 x 10^9/L, 33U/L,40g/L,12umol/L,8umol/L,29IU/L,243IU/L,22.4mmol/L,481mmol/L,145mmol/L,4.5mmol/L,110mmol/L

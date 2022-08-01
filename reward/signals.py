@@ -35,11 +35,11 @@ def signup_actions(sender, instance, created, ** kwargs):
                               thumbnail=device_image_urls.get('longevity'))
         Device.objects.create(user=instance, device_name="Steel HR", thumbnail=device_image_urls.get('steel_hr'))
         # Create app when user signs up
-        App.objects.create(user=instance, app_name='Google Fit', thumbnail=app_icon_urls.get('google_fit'))
-        App.objects.create(user=instance, app_name='Apple Health', thumbnail=app_icon_urls.get('apple_health'))
-        App.objects.create(user=instance, app_name='Garmin Connect', thumbnail=app_icon_urls.get('garmin_connect'))
-        App.objects.create(user=instance, app_name='Samsung Health', thumbnail=app_icon_urls.get('samsung_health'))
-        App.objects.create(user=instance, app_name='Xiaomi Mi Fit', thumbnail=app_icon_urls.get('xiaomi'))
+        App.objects.create(user=instance, app_name='google', thumbnail=app_icon_urls.get('google_fit'))
+        App.objects.create(user=instance, app_name='apple', thumbnail=app_icon_urls.get('apple_health'))
+        App.objects.create(user=instance, app_name='garmin', thumbnail=app_icon_urls.get('garmin_connect'))
+        App.objects.create(user=instance, app_name='samsung', thumbnail=app_icon_urls.get('samsung_health'))
+        App.objects.create(user=instance, app_name='xiaomi', thumbnail=app_icon_urls.get('xiaomi'))
         # Reward user with initial 50 LONG token when they sign up
         Reward.objects.create(user=instance, title="New user signup bonus",  reward_point=50)
 
