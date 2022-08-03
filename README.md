@@ -74,7 +74,7 @@ Each user has a unique **Authorization Token**, login as an admin to view token 
 #### cURL command to test the API
 
 The cURL command below describes an example of the API call
-```
+```shell
 curl --location --request POST '127.0.0.1:8000/entry-gadget/' \
 --header 'Authorization: Bearer e829b78e3319d4a9273831ef43242c987a62910c' \
 --form 'input_file=@"/absolute/path/of/project/test_data/blood_test.csv"' \
@@ -82,7 +82,7 @@ curl --location --request POST '127.0.0.1:8000/entry-gadget/' \
 ```
 #### Python code to test the API
 The code below shows an API request using python
-```
+```python
 import requests
 
 url = "127.0.0.1:8000/entry-gadget/"
